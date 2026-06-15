@@ -6,6 +6,7 @@ import { requestIdMiddleware } from './middlewares/requestId';
 import { loggerMiddleware } from './middlewares/logger';
 import { errorHandlerMiddleware } from './middlewares/errorHandler';
 import authRouter from './routes/auth';
+import eventsRouter from './routes/events';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/events', eventsRouter);
 
 // 404 Route handler
 app.use((req: Request, res: Response, next: NextFunction) => {
