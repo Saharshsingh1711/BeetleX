@@ -10,6 +10,7 @@ import {
 } from '../controllers/events';
 import { validateMiddleware } from '../middlewares/validate';
 import { authenticate, authorize } from '../middlewares/auth';
+import registrationsRouter from './registrations';
 
 const router = Router();
 
@@ -61,5 +62,6 @@ router.get('/:slug', getEventBySlug);
 router.patch('/:id', authenticate, authorize(['ORGANIZER', 'ADMIN']), validateMiddleware(updateEventSchema), updateEvent);
 router.delete('/:id', authenticate, authorize(['ADMIN']), deleteEvent);
 router.get('/:id/stats', authenticate, authorize(['ORGANIZER', 'ADMIN']), getEventStats);
+router.use('/:id', registrationsRouter);
 
 export default router;
