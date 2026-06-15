@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { AppError } from '../utils/errors';
+import { appEmitter, EVENTS } from '../utils/emitter';
 
 const prisma = new PrismaClient();
 
@@ -180,6 +181,8 @@ export const submitScore = async (req: Request, res: Response, next: NextFunctio
       },
     });
 
+    appEmitter.emit(EVENTS.LEADERBOARD_UPDATE, { eventId: project.eventId });
+
     res.status(201).json({ message: 'Score submitted successfully', score });
   } catch (error) {
     next(error);
@@ -244,6 +247,8 @@ export const updateScore = async (req: Request, res: Response, next: NextFunctio
       },
       data: updatedData,
     });
+
+    appEmitter.emit(EVENTS.LEADERBOARD_UPDATE, { eventId: existingScore.project.eventId });
 
     res.status(200).json({ message: 'Score updated successfully', score: updatedScore });
   } catch (error) {
