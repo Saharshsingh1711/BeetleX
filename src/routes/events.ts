@@ -9,6 +9,7 @@ import {
   getEventStats,
 } from '../controllers/events';
 import { createTeam, getTeams } from '../controllers/teams';
+import { getEventProjects } from '../controllers/projects';
 import { validateMiddleware } from '../middlewares/validate';
 import { authenticate, authorize } from '../middlewares/auth';
 import registrationsRouter from './registrations';
@@ -70,6 +71,7 @@ router.delete('/:id', authenticate, authorize(['ADMIN']), deleteEvent);
 router.get('/:id/stats', authenticate, authorize(['ORGANIZER', 'ADMIN']), getEventStats);
 router.post('/:id/teams', authenticate, validateMiddleware(eventTeamCreateSchema), createTeam);
 router.get('/:id/teams', authenticate, getTeams);
+router.get('/:id/projects', authenticate, getEventProjects);
 router.use('/:id', registrationsRouter);
 
 export default router;

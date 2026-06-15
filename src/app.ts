@@ -8,6 +8,7 @@ import { errorHandlerMiddleware } from './middlewares/errorHandler';
 import authRouter from './routes/auth';
 import eventsRouter from './routes/events';
 import teamsRouter from './routes/teams';
+import projectsRouter from './routes/projects';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/api/auth', authRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/teams', teamsRouter);
+app.use('/api/projects', projectsRouter);
 
 // 404 Route handler
 app.use((req: Request, res: Response, next: NextFunction) => {
