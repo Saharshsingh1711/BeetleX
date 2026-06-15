@@ -14,6 +14,7 @@ import { getEventScores } from '../controllers/scores';
 import { validateMiddleware } from '../middlewares/validate';
 import { authenticate, authorize } from '../middlewares/auth';
 import registrationsRouter from './registrations';
+import announcementsRouter from './announcements';
 
 const router = Router();
 
@@ -74,6 +75,7 @@ router.post('/:id/teams', authenticate, validateMiddleware(eventTeamCreateSchema
 router.get('/:id/teams', authenticate, getTeams);
 router.get('/:id/projects', authenticate, getEventProjects);
 router.get('/:id/scores', authenticate, authorize(['ORGANIZER', 'ADMIN']), getEventScores);
+router.use('/:id/announcements', announcementsRouter);
 router.use('/:id', registrationsRouter);
 
 export default router;
