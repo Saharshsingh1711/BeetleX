@@ -10,6 +10,7 @@ import {
 } from '../controllers/events';
 import { createTeam, getTeams } from '../controllers/teams';
 import { getEventProjects } from '../controllers/projects';
+import { getEventScores } from '../controllers/scores';
 import { validateMiddleware } from '../middlewares/validate';
 import { authenticate, authorize } from '../middlewares/auth';
 import registrationsRouter from './registrations';
@@ -72,6 +73,7 @@ router.get('/:id/stats', authenticate, authorize(['ORGANIZER', 'ADMIN']), getEve
 router.post('/:id/teams', authenticate, validateMiddleware(eventTeamCreateSchema), createTeam);
 router.get('/:id/teams', authenticate, getTeams);
 router.get('/:id/projects', authenticate, getEventProjects);
+router.get('/:id/scores', authenticate, authorize(['ORGANIZER', 'ADMIN']), getEventScores);
 router.use('/:id', registrationsRouter);
 
 export default router;

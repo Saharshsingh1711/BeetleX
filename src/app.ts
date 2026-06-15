@@ -9,6 +9,7 @@ import authRouter from './routes/auth';
 import eventsRouter from './routes/events';
 import teamsRouter from './routes/teams';
 import projectsRouter from './routes/projects';
+import judgeRouter from './routes/scores';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/teams', teamsRouter);
 app.use('/api/projects', projectsRouter);
+app.use('/api/judge', judgeRouter);
 
 // 404 Route handler
 app.use((req: Request, res: Response, next: NextFunction) => {
