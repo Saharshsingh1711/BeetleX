@@ -42,6 +42,7 @@ model User {
   registrations   Registration[]
   judgedEvents    EventJudge[]   @relation("JudgedEvents")
   assignedJudges  EventJudge[]   @relation("AssignedJudges")
+  scores          Score[]
 
   @@map("users")
 }
@@ -191,6 +192,9 @@ model Project {
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
 
+  // Relations
+  scores      Score[]
+
   @@unique([eventId, teamId])
   @@map("projects")
 }
@@ -208,4 +212,23 @@ model EventJudge {
 
   @@unique([eventId, judgeId])
   @@map("event_judges")
+}
+
+model Score {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  projectId    String   @map("project_id") @db.Uuid
+  project      Project  @relation(fields: [projectId], references: [id])
+  judgeId      String   @map("judge_id") @db.Uuid
+  judge        User     @relation(fields: [judgeId], references: [id])
+  innovation   Int
+  technical    Int
+  impact       Int
+  presentation Int
+  total        Decimal  @db.Decimal(4, 2)
+  comments     String?  @db.Text
+  submittedAt  DateTime @default(now()) @map("submitted_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@unique([projectId, judgeId])
+  @@map("scores")
 }
