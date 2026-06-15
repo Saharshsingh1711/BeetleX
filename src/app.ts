@@ -1,15 +1,21 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import { requestIdMiddleware } from './middlewares/requestId';
+import { loggerMiddleware } from './middlewares/logger';
+import { errorHandlerMiddleware } from './middlewares/errorHandler';
+import authRouter from './routes/auth';
 
 const app = express();
 
 // Middleware
+app.use(requestIdMiddleware);
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: true, credentials: true })); // Enable credentials for HTTP-only cookie transfer
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(loggerMiddleware);
 
 // Routes
 app.get('/health', (req: Request, res: Response) => {
@@ -17,8 +23,11 @@ app.get('/health', (req: Request, res: Response) => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
+    requestId: req.headers['x-request-id'],
   });
 });
+
+app.use('/api/auth', authRouter);
 
 // 404 Route handler
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -26,9 +35,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+app.use(errorHandlerMiddleware);
 
 export default app;
