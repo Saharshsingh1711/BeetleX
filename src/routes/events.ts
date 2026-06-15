@@ -8,6 +8,7 @@ import {
   deleteEvent,
   getEventStats,
 } from '../controllers/events';
+import { createTeam, getTeams } from '../controllers/teams';
 import { validateMiddleware } from '../middlewares/validate';
 import { authenticate, authorize } from '../middlewares/auth';
 import registrationsRouter from './registrations';
@@ -56,12 +57,19 @@ const updateEventSchema = z.object({
   isPublic: z.boolean().optional(),
 });
 
+const eventTeamCreateSchema = z.object({
+  name: z.string().min(1),
+  track: z.string().min(1).optional().nullable(),
+});
+
 router.get('/', getEvents);
 router.post('/', authenticate, authorize(['ORGANIZER', 'ADMIN']), validateMiddleware(createEventSchema), createEvent);
 router.get('/:slug', getEventBySlug);
 router.patch('/:id', authenticate, authorize(['ORGANIZER', 'ADMIN']), validateMiddleware(updateEventSchema), updateEvent);
 router.delete('/:id', authenticate, authorize(['ADMIN']), deleteEvent);
 router.get('/:id/stats', authenticate, authorize(['ORGANIZER', 'ADMIN']), getEventStats);
+router.post('/:id/teams', authenticate, validateMiddleware(eventTeamCreateSchema), createTeam);
+router.get('/:id/teams', authenticate, getTeams);
 router.use('/:id', registrationsRouter);
 
 export default router;
